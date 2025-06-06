@@ -1,0 +1,62 @@
+{
+  "v0.01": {
+    "path": "C:\\Games\\Call of Duty Modern Warfare v0.01.2.7089334",
+    "exe": "ModernWarfare.exe",
+    "save": "C:\\Users\\lol\\OneDrive\\Documents\\Call of Duty Modern Warfare",
+    "backup": "C:\\Users\\lol\\OneDrive\\Documents\\COD_MW_v0.01"
+  },
+  "v1.16": {
+    "path": "C:\\Games\\Call of Duty Modern Warfare 1.16.1.7496249",
+    "exe": "ModernWarfare.exe",
+    "save": "C:\\Users\\lol\\OneDrive\\Documents\\Call of Duty Modern Warfare",
+    "backup": "C:\\Users\\lol\\OneDrive\\Documents\\COD_MW_v1.16"
+  },
+  "v1.17": {
+    "path": "C:\\Games\\Call of Duty Modern Warfare v1.17",
+    "exe": "ModernWarfare.exe",
+    "save": "C:\\Users\\lol\\OneDrive\\Documents\\Call of Duty Modern Warfare",
+    "backup": "C:\\Users\\lol\\OneDrive\\Documents\\COD_MW_v1.17"
+  },
+  "v1.20": {
+    "path": "C:\\Games\\Call of Duty Modern Warfare v1.20.4.7623265",
+    "exe": "game_dx12_ship_replay.exe",
+    "save": "C:\\Users\\lol\\OneDrive\\Documents\\Call of Duty Modern Warfare",
+    "backup": "C:\\Users\\lol\\OneDrive\\Documents\\COD_MW_v1.20"
+  },
+  "v1.30": {
+    "path": "C:\\Games\\Call of Duty Modern Warfare v1.30.0.8403677",
+    "exe": "ModernWarfare.exe",
+    "save": "C:\\Users\\lol\\OneDrive\\Documents\\Call of Duty Modern Warfare",
+    "backup": "C:\\Users\\lol\\OneDrive\\Documents\\COD_MW_v1.30"
+  },
+  "v1.38": {
+    "path": "C:\\Games\\Call of Duty Modern Warfare V1.38.3.9489393",
+    "exe": "ModernWarfare.exe",
+    "save": "C:\\Users\\lol\\OneDrive\\Documents\\Call of Duty Modern Warfare",
+    "backup": "C:\\Users\\lol\\OneDrive\\Documents\\COD_MW_v1.38"
+  },
+  "v1.42": {
+    "path": "C:\\Games\\Call of Duty Modern Warfare v1.42.1.10125479",
+    "exe": "ModernWarfare.exe",
+    "save": "C:\\Users\\lol\\OneDrive\\Documents\\Call of Duty Modern Warfare",
+    "backup": "C:\\Users\\lol\\OneDrive\\Documents\\COD_MW_v1.42"
+  },
+  "v1.44": {
+    "path": "C:\\Games\\Call of Duty Modern Warfare v1.44.0.10435696",
+    "exe": "ModernWarfare.exe",
+    "save": "C:\\Users\\lol\\OneDrive\\Documents\\Call of Duty Modern Warfare",
+    "backup": "C:\\Users\\lol\\OneDrive\\Documents\\COD_MW_v1.44"
+  },
+  "v1.46": {
+    "path": "C:\\Games\\Call of Duty Modern Warfare v1.46.0.10750827",
+    "exe": "ModernWarfare.exe",
+    "save": "C:\\Users\\lol\\OneDrive\\Documents\\Call of Duty Modern Warfare",
+    "backup": "C:\\Users\\lol\\OneDrive\\Documents\\COD_MW_v1.46"
+  },
+  "steam": {
+    "path": "steam://rungameid/2000950",
+    "exe": null,
+    "save": "C:\\Users\\lol\\OneDrive\\Documents\\Call of Duty Modern Warfare",
+    "backup": "C:\\Users\\lol\\OneDrive\\Documents\\COD_MW_steam"
+  }
+}
