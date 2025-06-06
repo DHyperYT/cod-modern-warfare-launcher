@@ -2,7 +2,7 @@
 Launcher made in python to launch different versions of Call of Duty Modern Warfare while also managing their save data to ensure they dont conflict
 
 
-# HOW TO USE
+# USAGE
 
 1. Open ``config.json`` and set all paths accordingly for your system. (Use my template from that file). Remove entries you don't want.
 2. Make sure the path you set at ``backup`` already exists to avoid issues.
@@ -13,7 +13,7 @@ Launcher made in python to launch different versions of Call of Duty Modern Warf
 
 Before launching a version of the game, the launcher will copy the contents of the ``backup`` path to ``save``, to ensure that the data of the appropriate version is used. Once it launches the game's executable, it will hang until you finish playing. Then, it will copy the contents of ``save`` into the ``backup`` folder of the version you launched. and ``save`` will then be deleted to avoid causing issues with other versions of the game.
 
-# HOW TO BUILD FROM SOURCE
+# BUILD FROM SOURCE
 
 Open Command Prompt at the path of the source and run ``pip install -r requirements.txt``
 
