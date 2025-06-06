@@ -296,7 +296,7 @@ def load_steam_profile_ui():
         threading.Thread(target=load_avatar, daemon=True).start()
 
         steam_name_label.configure(text=f"Steam Achievements")
-        welcome_label.configure(text=f"Welcome, {steam_name}."
+        welcome_label.configure(text=f"Welcome, {steam_name}.")
         def load_achievements():
             achs = get_steam_achievements(STEAM_ID)
             def update_achievements():
