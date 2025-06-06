@@ -24,3 +24,8 @@ Then use the included ``build.bat``
 # Contribute
 
 Found a bug or want to help improve the launcher? Make an **Issue** or **Pull Request**! 
+
+
+# Plans
+
+Adding Steam integration for achievements and personalization soon.
