@@ -1,6 +1,6 @@
-customtkinter
 psutil
 inputs
+customtkinter
 requests
 beautifulsoup4
 pillow
