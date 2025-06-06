@@ -9,10 +9,30 @@ import shutil
 import stat
 import customtkinter as ctk
 import json
+import requests
+from bs4 import BeautifulSoup
+from PIL import Image, ImageTk
+from io import BytesIO
 
 # Load config from JSON
 with open("config.json", "r") as f:
     CONFIG = json.load(f)
+
+# Load Steam ID from steam.json
+def load_steam_id():
+    try:
+        with open("steam.json", "r") as f:
+            data = json.load(f)
+            return data.get("steam_id", "")
+    except Exception as e:
+        print(f"Failed to load steam.json: {e}")
+        return ""
+
+STEAM_ID = load_steam_id()
+if not STEAM_ID:
+    print("Warning: Steam ID not found in steam.json. Please add your Steam ID!")
+
+COD_MW_APP_ID = '2000950'
 
 # flag to track if game is running
 game_running = threading.Event()
@@ -206,24 +226,141 @@ def listen_controller():
             if event.ev_type in ["Key", "Absolute"]:
                 controller_navigation(event.code, event.state)
 
+# -------------- STEAM PROFILE & ACHIEVEMENTS SCRAPER --------------
+
+def get_steam_profile(steam_id):
+    url = f"https://steamcommunity.com/profiles/{steam_id}/?xml=1"
+    try:
+        resp = requests.get(url)
+        resp.raise_for_status()
+        from xml.etree import ElementTree as ET
+        root = ET.fromstring(resp.content)
+        name = root.findtext('steamID')
+        avatar = root.findtext('avatarMedium')
+        return {'name': name, 'avatar': avatar}
+    except Exception as e:
+        print(f"Error fetching steam profile: {e}")
+        return None
+
+def get_steam_achievements(steam_id, app_id=COD_MW_APP_ID):
+    url = f'https://steamcommunity.com/profiles/{steam_id}/stats/{app_id}/?tab=achievements'
+    try:
+        res = requests.get(url)
+        res.raise_for_status()
+    except requests.RequestException as e:
+        print(f"Failed to fetch achievements page: {e}")
+        return []
+
+    soup = BeautifulSoup(res.text, 'html.parser')
+    achievements = []
+
+    for div in soup.find_all('div', class_='achieveRow'):
+        title_div = div.find('h3')
+        unlocked = 'achieved' in div.get('class', []) or div.find('div', class_='achieveUnlockTime') is not None
+        icon_img = div.find('img')
+
+        title = title_div.text.strip() if title_div else "Unknown Achievement"
+        icon_url = icon_img['src'] if icon_img else ""
+
+        achievements.append({
+            'title': title,
+            'unlocked': unlocked,
+            'icon': icon_url
+        })
+
+    return achievements
+
+def load_steam_profile_ui():
+    profile = get_steam_profile(STEAM_ID)
+    if profile:
+        steam_name = profile['name']
+        steam_avatar_url = profile['avatar']
+
+        def load_avatar():
+            try:
+                resp = requests.get(steam_avatar_url)
+                resp.raise_for_status()
+                img_data = resp.content
+                img = Image.open(BytesIO(img_data))
+                img = img.resize((64, 64))
+                avatar_img = ImageTk.PhotoImage(img)
+
+                def update_avatar():
+                    avatar_label.configure(image=avatar_img)
+                    avatar_label.image = avatar_img
+
+                app.after(0, update_avatar)
+            except Exception as e:
+                print(f"Failed to load avatar image: {e}")
+
+        threading.Thread(target=load_avatar, daemon=True).start()
+
+        steam_name_label.configure(text=f"Steam Achievements")
+        welcome_label.configure(text=f"Welcome, {steam_name}."
+        def load_achievements():
+            achs = get_steam_achievements(STEAM_ID)
+            def update_achievements():
+                for widget in achievements_frame.winfo_children():
+                    widget.destroy()
+                if not achs:
+                    ctk.CTkLabel(achievements_frame, text="No achievements found or profile private.").pack()
+                    return
+                for ach in achs:
+                    status = "✅" if ach['unlocked'] else "❌"
+                    text = f"{status} {ach['title']}"
+                    ctk.CTkLabel(achievements_frame, text=text, anchor="w").pack(fill='x', pady=2)
+            app.after(0, update_achievements)
+
+        threading.Thread(target=load_achievements, daemon=True).start()
+    else:
+        steam_name_label.configure(text="Steam profile not found.")
+        welcome_label.configure(text="")
+        avatar_label.configure(image=None)
+
+# -------------- UI SETUP --------------
+
 ctk.set_appearance_mode("dark")
-ctk.set_default_color_theme("dark-blue")
+ctk.set_default_color_theme("blue")
 
 app = ctk.CTk()
-app.title("MW Launcher (Xinput Support)")
-app.geometry("500x650")
+app.title("COD MW Launcher")
+app.geometry("700x600")
 
-ctk.CTkLabel(app, text="Call of Duty Modern Warfare Launcher", font=("Segoe UI", 20, "bold")).pack(pady=15)
-ctk.CTkLabel(app, text="Navigate with D-Pad / Left Joystick, launch with A", font=("Segoe UI", 14)).pack(pady=5)
+title_label = ctk.CTkLabel(app, text="Call of Duty Modern Warfare Launcher", font=("Segoe UI", 20, "bold"))
+title_label.place(x=20, y=10)
 
-for version in version_order:
-    label = version if version != "steam" else "Steam (latest)"
-    buttons[version] = ctk.CTkButton(app, text=label, command=lambda v=version: on_button_click(v), width=300)
-    buttons[version].pack(pady=5)
+instruction_label = ctk.CTkLabel(app, text="Navigate with D-Pad / Left Joystick, launch with A", font=("Segoe UI", 14))
+instruction_label.place(x=20, y=50)
 
-status_label = ctk.CTkLabel(app, text="Ready to launch!", font=("Segoe UI", 14, "italic"))
-status_label.pack(pady=20)
+avatar_label = ctk.CTkLabel(app, text="", width=64, height=64)
+avatar_label.place(x=620, y=10)
+
+steam_name_label = ctk.CTkLabel(app, font=("Arial", 14))
+steam_name_label.place(x=480, y=75)
+
+achievements_frame = ctk.CTkScrollableFrame(app, width=300, height=400)
+achievements_frame.place(x=380, y=110)
+
+welcome_label = ctk.CTkLabel(app, font=("Arial", 12, "italic"))
+welcome_label.place(x=380, y=520)
+
+button_frame = ctk.CTkFrame(app, width=300, height=500) 
+button_frame.place(x=20, y=90)
+
+for i, version in enumerate(version_order):
+    btn = ctk.CTkButton(button_frame, text=version, width=260, height=40,
+                        fg_color="gray20", text_color="lightgray",
+                        command=lambda v=version: on_button_click(v))
+    btn.place(x=20, y=10 + i * 50)
+    buttons[version] = btn
+
+status_label = ctk.CTkLabel(app, text="Ready!", anchor="w", width=660)
+status_label.place(x=20, y=570)
 
 update_ui_selection()
+load_steam_profile_ui()
+
+# Start controller listening thread
 threading.Thread(target=listen_controller, daemon=True).start()
+
 app.mainloop()
